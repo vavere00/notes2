@@ -23,13 +23,22 @@ import java.util.*
 
 
 class detailAct  : AppCompatActivity() {
+    private val db get() = Database.getInstance(this)
+    private var exampleList = mutableListOf<ShoppingItem>()
+
+    private val adapter = ExampleAdapter(exampleList, MainActivity())
+
+    private val items = mutableListOf<ShoppingItem>()
 
     val REQUEST_IMAGE_CAPTURE = 1
 
     lateinit var currentPhotoPath: String
 
+    val mainactivity : MainActivity = MainActivity()
+
     @Throws(IOException::class)
     private fun createImageFile(): File {
+        Log.i("path1", currentPhotoPath.toString())
         // Create an image file name
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
@@ -41,7 +50,7 @@ class detailAct  : AppCompatActivity() {
             // Save a file: path for use with ACTION_VIEW intents
             currentPhotoPath = absolutePath
         }
-        Log.i("path1", currentPhotoPath.toString())
+        Log.i("path2", currentPhotoPath.toString())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,6 +59,8 @@ class detailAct  : AppCompatActivity() {
 
         val imageView: ImageView = findViewById(R.id.imageView)
         val butCamera: FloatingActionButton = findViewById(R.id.floatingActionCamera)
+
+        saveButton.setOnClickListener { appendItem() }
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
         != PackageManager.PERMISSION_GRANTED){
@@ -92,7 +103,6 @@ class detailAct  : AppCompatActivity() {
     }
 
 
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
@@ -100,16 +110,30 @@ class detailAct  : AppCompatActivity() {
             imageView.setImageBitmap(imageBitmap)
             Log.i("", "Line 100")
 
-            fun galleryAddPic() {
-                Log.i("", "Line 106")
-                Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE).also { mediaScanIntent ->
-                    val f = File(currentPhotoPath)
-                    mediaScanIntent.data = Uri.fromFile(f)
-                    sendBroadcast(mediaScanIntent)
-                    Log.i("", "Line 111")
-                }
-            }
+//            fun galleryAddPic() {
+//                Log.i("", "Line 106")
+//                Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE).also { mediaScanIntent ->
+//                    val f = File(currentPhotoPath)
+//                    mediaScanIntent.data = Uri.fromFile(f)
+//                    sendBroadcast(mediaScanIntent)
+//                    Log.i("", "Line 111")
+//                }
+//            }
         }
+    }
+
+
+
+    private fun appendItem() {
+        val item = ShoppingItem(detTitle.text.toString(), detDetails.text.toString(), "")
+        item.uid = db.shoppingItemDao().insertAll(item).first()
+        items.add(item)
+
+        items.sortBy { it.name }
+        detTitle.text.clear()
+        detDetails.text.clear()
+        //adapter.notifyDataSetChanged()
+        mainactivity.notifychange()
     }
 
 }

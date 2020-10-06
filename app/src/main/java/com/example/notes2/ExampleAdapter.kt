@@ -9,7 +9,12 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import kotlinx.android.synthetic.main.example_item.view.*
 
-class ExampleAdapter(private val exampleList : List<ExampleItem>,private val listener: onItemClickListener) : Adapter<ExampleAdapter.ExampleViewHolder>() {
+class ExampleAdapter(
+    private val exampleList: MutableList<ShoppingItem>,
+    private val listener: MainActivity
+) :
+
+    Adapter<ExampleAdapter.ExampleViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExampleViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.example_item,
@@ -25,7 +30,7 @@ class ExampleAdapter(private val exampleList : List<ExampleItem>,private val lis
         //val context = holder.itemView.context
 
        // holder.imageView.setImageResource(currentItem.imageResources)
-        holder.textView1.text = currentItem.text1
+        holder.textView1.text = currentItem.name
 
         val posNow = exampleList.get(holder.absoluteAdapterPosition)
         Log.i("", posNow.toString())
@@ -55,6 +60,6 @@ class ExampleAdapter(private val exampleList : List<ExampleItem>,private val lis
 
     interface onItemClickListener{
         fun onItemClick(position: Int)
-        fun itemRemove(position: ExampleItem)
+        fun itemRemove(position: ShoppingItem)
     }
 }

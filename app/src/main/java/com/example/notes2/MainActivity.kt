@@ -11,16 +11,30 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlin.random.Random
 
 class MainActivity : AppCompatActivity(), ExampleAdapter.onItemClickListener {
-    private val exampleList = generateDummyList(10)
+
+    private val db get() = Database.getInstance(this)
+    private var exampleList = mutableListOf<ShoppingItem>()
+
+    //private val exampleList = generateDummyList(10)
+
+
     private val adapter = ExampleAdapter(exampleList, this)
+
+    //private lateinit var adapter: ShoppingItemRecyclerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        exampleList = generateDummyList(10)
+
+
+        exampleList.addAll(db.shoppingItemDao().getAll())
+
+
+
         recycler_view.adapter = adapter
         recycler_view.layoutManager = LinearLayoutManager(this)
-        //recycler_view.layoutManager = GridLayoutManager(this, 2)
         recycler_view.setHasFixedSize(true)
 
         buttonAdd.setOnClickListener {
@@ -32,16 +46,22 @@ class MainActivity : AppCompatActivity(), ExampleAdapter.onItemClickListener {
     fun itemInsert(view: View){
         val index:Int = Random.nextInt(8)
 
-        val nextItem = ExampleItem(
-            R.drawable.ic_baseline_ship,
-            "New itme, pos $index"
+        val nextItem = ShoppingItem(
+            "test $index",
+            "test details",
+            "test url"
         )
         exampleList.add(index, nextItem)
         adapter.notifyItemInserted(index)
     }
 
 
-    override fun itemRemove(item: ExampleItem){
+    fun notifychange(){
+        adapter.notifyDataSetChanged()
+    }
+
+
+    override fun itemRemove(item: ShoppingItem){
         val index: Int = item.toString().toInt()
         Log.i("", index.toString())
         Log.i("",exampleList.toString())
@@ -53,24 +73,23 @@ class MainActivity : AppCompatActivity(), ExampleAdapter.onItemClickListener {
     override fun onItemClick(position: Int) {
         Toast.makeText(this, "Item $position clicked", Toast.LENGTH_SHORT).show()
         val clickedItem = exampleList[position]
-        clickedItem.text1 = "Item clicked"
+        //clickedItem.name = "Item clicked"
         adapter.notifyItemChanged(position)
     }
 
-    private fun generateDummyList(size: Int): ArrayList<ExampleItem> {
-        val list = ArrayList<ExampleItem>()
+    private fun generateDummyList(size: Int): MutableList<ShoppingItem> {
+        val list = mutableListOf<ShoppingItem>()
         for (i in 0 until size) {
-            val drawable = when (i % 3) {
-                0 -> R.drawable.ic_android_1
-                1 -> R.drawable.ic_baseline_bike
-                else -> R.drawable.ic_baseline_ship
+            val details: String = when (i % 3) {
+                0 -> "details test $i"
+                1 -> "details test $i"
+                else -> "details test $i"
             }
-            val item = ExampleItem(drawable, "Item $i")
+            val item = ShoppingItem("Item $i","","")
             list += item
         }
         return list
     }
-
 
 
 
