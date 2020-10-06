@@ -33,7 +33,7 @@ class ExampleAdapter(
         holder.textView1.text = currentItem.name
 
         val posNow = exampleList.get(holder.absoluteAdapterPosition)
-        Log.i("", posNow.toString())
+        Log.i("adapter log", posNow.toString())
 
         holder.itemView.deleteButton1.setOnClickListener {
             listener.itemRemove(posNow)
@@ -53,13 +53,13 @@ class ExampleAdapter(
         override fun onClick(v: View?) {
             val position:Int = bindingAdapterPosition
             if (position != RecyclerView.NO_POSITION) {
-                listener.onItemClick(position)
+                listener.onItemClick(exampleList[position])
             }
         }
     }
 
     interface onItemClickListener{
-        fun onItemClick(position: Int)
+        fun onItemClick(position: ShoppingItem)
         fun itemRemove(position: ShoppingItem)
     }
 }

@@ -60,8 +60,8 @@ class detailAct  : AppCompatActivity() {
         val imageView: ImageView = findViewById(R.id.imageView)
         val butCamera: FloatingActionButton = findViewById(R.id.floatingActionCamera)
 
-        saveButton.setOnClickListener { appendItem() }
-
+//        saveButton.setOnClickListener { appendItem() }
+//
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
         != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), 100)
@@ -100,6 +100,8 @@ class detailAct  : AppCompatActivity() {
         }
 
 
+
+
     }
 
 
@@ -124,17 +126,17 @@ class detailAct  : AppCompatActivity() {
 
 
 
-    private fun appendItem() {
-        val item = ShoppingItem(detTitle.text.toString(), detDetails.text.toString(), "")
-        item.uid = db.shoppingItemDao().insertAll(item).first()
-        items.add(item)
-
-        items.sortBy { it.name }
-        detTitle.text.clear()
-        detDetails.text.clear()
-        //adapter.notifyDataSetChanged()
-        mainactivity.notifychange()
-    }
+//    private fun appendItem() {
+//        val item = ShoppingItem(detTitle.text.toString(), detDetails.text.toString(), "")
+//        item.uid = db.shoppingItemDao().insertAll(item).first()
+//        items.add(item)
+//
+//        items.sortBy { it.name }
+//        detTitle.text.clear()
+//        detDetails.text.clear()
+//        //adapter.notifyDataSetChanged()
+//        mainactivity.notifychange()
+//    }
 
 }
 
